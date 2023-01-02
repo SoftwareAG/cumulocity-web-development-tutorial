@@ -30,6 +30,6 @@ export class DeviceInfoComponent implements OnInit {
       (temperatureMeasurement) => (this.tempteratureMeasurement = temperatureMeasurement)
     );
 
-    this.deviceInfoService.subscribeForTemperatureMeasurements();
+    this.deviceInfoService.subscribeForTemperatureMeasurements(this.DEVICE_ID);
   }
 }
