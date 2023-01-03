@@ -8,7 +8,7 @@ import { DeviceInfoService } from './device-info.service';
   providers: [DeviceInfoService],
 })
 export class DeviceInfoComponent implements OnInit {
-  private readonly DEVICE_ID = '8192129';
+  private readonly DEVICE_ID = '{{deviceId}}';
 
   tempteratureMeasurement: TemperatureMeasuerement;
 
