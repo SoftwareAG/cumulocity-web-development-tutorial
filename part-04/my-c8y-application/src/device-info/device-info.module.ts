@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
 import { CoreModule, DynamicComponentDefinition, HOOK_COMPONENTS } from '@c8y/ngx-components';
 import { ContextWidgetConfig } from '@c8y/ngx-components/context-dashboard';
 import { DeviceInfoComponent } from './device-info.component';
