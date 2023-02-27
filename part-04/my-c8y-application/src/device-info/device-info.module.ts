@@ -19,11 +19,11 @@ import { DeviceInfoComponent } from './device-info.component';
           component: DeviceInfoComponent,
           data: {
             settings: {
-              noNewWidgets: false, // Set this to true, to don't allow adding new widgets.
+              noNewWidgets: false,
               ng1: {
                 options: {
-                  noDeviceTarget: false, // Set this to true to hide the AngularJS device selector.
-                  groupsSelectable: false, // Set this, if not only devices should be selectable.
+                  noDeviceTarget: false,
+                  groupsSelectable: false,
                 },
               },
             },
