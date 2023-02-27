@@ -4,20 +4,8 @@ import { CoreModule, DynamicComponentDefinition, HOOK_COMPONENTS } from '@c8y/ng
 import { ContextWidgetConfig } from '@c8y/ngx-components/context-dashboard';
 import { DeviceInfoComponent } from './device-info.component';
 
-const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'device-info',
-    pathMatch: 'full',
-  },
-  {
-    path: 'device-info',
-    component: DeviceInfoComponent,
-  },
-];
-
 @NgModule({
-  imports: [RouterModule.forChild(routes), CoreModule],
+  imports: [CoreModule],
   exports: [],
   declarations: [DeviceInfoComponent],
   providers: [

@@ -8,6 +8,11 @@ import { NamedDashboardNavigationFactory } from './named-dashboard.factory';
 
 const routes: Routes = [
   {
+    path: '',
+    redirectTo: 'named-dashboard',
+    pathMatch: 'full',
+  },
+  {
     path: 'named-dashboard',
     component: NamedDashboardComponent,
   },
