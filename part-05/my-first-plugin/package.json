@@ -64,7 +64,10 @@
         "widget-plugin": [
           "DeviceInfoModule"
         ]
-      }
+      },
+      "copy": [
+        { "from": "assets", "to": "assets" }
+      ]
     },
     "cli": {}
   },
