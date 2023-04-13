@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { DeviceDetails, TemperatureMeasuerement } from './device-info.model';
 import { DeviceInfoService } from './device-info.service';
 
@@ -7,7 +7,7 @@ import { DeviceInfoService } from './device-info.service';
   templateUrl: 'device-info.component.html',
   providers: [DeviceInfoService],
 })
-export class DeviceInfoComponent implements OnInit {
+export class DeviceInfoComponent implements OnInit, OnDestroy {
   @Input() config: { device: { id: string; name: string } };
 
   tempteratureMeasurement: TemperatureMeasuerement;
@@ -21,6 +21,10 @@ export class DeviceInfoComponent implements OnInit {
     this.subscribeForTemperatureMeasurements();
   }
 
+  ngOnDestroy(): void {
+    this.unsubscribeForTemperatureMeasurements();
+  }
+
   private async initDeviceDetails() {
     this.deviceDetails = await this.deviceInfoService.getDeviceDetails(this.config.device.id);
   }
@@ -31,5 +35,9 @@ export class DeviceInfoComponent implements OnInit {
     );
 
     this.deviceInfoService.subscribeForTemperatureMeasurements(this.config.device.id);
+  }
+
+  private unsubscribeForTemperatureMeasurements() {
+    this.deviceInfoService.unscubscribeFromTemperatureMeasurements();
   }
 }

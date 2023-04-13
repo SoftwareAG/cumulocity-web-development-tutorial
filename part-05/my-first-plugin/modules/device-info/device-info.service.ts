@@ -9,6 +9,8 @@ export class DeviceInfoService {
   temperatureMeasurement$: Subject<TemperatureMeasuerement> =
     new Subject<TemperatureMeasuerement>();
 
+  private realtimeSubscription: object;
+
   private readonly TEMPERATURE_FRAGMENT = 'c8y_Temperature';
 
   private readonly TEMPERATURE_SERIES = 'T';
@@ -36,6 +38,14 @@ export class DeviceInfoService {
     this.loadLatestMeasurement(deviceId, this.TEMPERATURE_FRAGMENT, this.TEMPERATURE_SERIES);
 
     this.subscribeForMeasurements(deviceId, this.TEMPERATURE_FRAGMENT, this.TEMPERATURE_SERIES);
+  }
+
+  unscubscribeFromTemperatureMeasurements(): void {
+    if (!this.realtimeSubscription) {
+      return;
+    }
+
+    this.realtime.unsubscribe(this.realtimeSubscription);
   }
 
   private async loadLatestMeasurement(
@@ -84,21 +94,24 @@ export class DeviceInfoService {
     measurementFragment: string,
     measurementSeries: string
   ) {
-    this.realtime.subscribe(`/measurements/${deviceId}`, (measurementNotification) => {
-      const measurement: IMeasurement = measurementNotification.data.data;
-      if (!measurement || !has(measurement, `${measurementFragment}.${measurementSeries}`)) {
-        return;
-      }
+    this.realtimeSubscription = this.realtime.subscribe(
+      `/measurements/${deviceId}`,
+      (measurementNotification) => {
+        const measurement: IMeasurement = measurementNotification.data.data;
+        if (!measurement || !has(measurement, `${measurementFragment}.${measurementSeries}`)) {
+          return;
+        }
 
-      const temperatureValue: number = get(
-        measurement,
-        `${measurementFragment}.${measurementSeries}.value`
-      );
-      const temperatureUnit: string = get(
-        measurement,
-        `${measurementFragment}.${measurementSeries}.unit`
-      );
-      this.temperatureMeasurement$.next({ value: temperatureValue, unit: temperatureUnit });
-    });
+        const temperatureValue: number = get(
+          measurement,
+          `${measurementFragment}.${measurementSeries}.value`
+        );
+        const temperatureUnit: string = get(
+          measurement,
+          `${measurementFragment}.${measurementSeries}.unit`
+        );
+        this.temperatureMeasurement$.next({ value: temperatureValue, unit: temperatureUnit });
+      }
+    );
   }
 }
