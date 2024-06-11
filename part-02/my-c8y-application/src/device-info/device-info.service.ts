@@ -19,14 +19,19 @@ export class DeviceInfoService {
     // publish latest measurement
     this.temperatureMeasurement$.next({ value: 10, unit: '°C' });
 
+    console.log('subscribe for temperature measurements');
+
     // push random temperature every 10 seconds
-    setInterval(
-      () => this.temperatureMeasurement$.next({ value: this.getRandomInt(8, 15), unit: '°C' }),
-      10000
-    );
+    setInterval(() => {
+      console.log('generate random temperature');
+      this.temperatureMeasurement$.next({
+        value: this.getRandomInt(8, 15),
+        unit: '°C',
+      });
+    }, 10000);
   }
 
-  private getRandomInt(min, max) {
+  private getRandomInt(min: number, max: number): number {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min);

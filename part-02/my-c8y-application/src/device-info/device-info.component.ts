@@ -15,7 +15,10 @@ export class DeviceInfoComponent implements OnInit {
   constructor(private deviceInfoService: DeviceInfoService) {}
 
   ngOnInit() {
+    console.log('init device info component');
     this.initDeviceDetails();
+
+    console.log('subscribe for temperature measurements');
     this.subscribeForTemperatureMeasurements();
   }
 
