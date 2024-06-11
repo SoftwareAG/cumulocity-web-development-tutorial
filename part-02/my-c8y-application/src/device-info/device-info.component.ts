@@ -8,17 +8,14 @@ import { DeviceInfoService } from './device-info.service';
   providers: [DeviceInfoService],
 })
 export class DeviceInfoComponent implements OnInit {
-  tempteratureMeasurement: TemperatureMeasuerement;
+  tempteratureMeasurement: TemperatureMeasuerement | undefined;
 
-  deviceDetails: DeviceDetails;
+  deviceDetails!: DeviceDetails;
 
   constructor(private deviceInfoService: DeviceInfoService) {}
 
   ngOnInit() {
-    console.log('init device info component');
     this.initDeviceDetails();
-
-    console.log('subscribe for temperature measurements');
     this.subscribeForTemperatureMeasurements();
   }
 
@@ -28,7 +25,8 @@ export class DeviceInfoComponent implements OnInit {
 
   private subscribeForTemperatureMeasurements() {
     this.deviceInfoService.temperatureMeasurement$.subscribe(
-      (temperatureMeasurement) => (this.tempteratureMeasurement = temperatureMeasurement)
+      (temperatureMeasurement) =>
+        (this.tempteratureMeasurement = temperatureMeasurement)
     );
 
     this.deviceInfoService.subscribeForTemperatureMeasurements();
