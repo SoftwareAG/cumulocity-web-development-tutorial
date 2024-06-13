@@ -15,8 +15,8 @@
   <div class="form-group">
     <label>{{ "Temperature" | translate }}</label>
     <p class="form-control-static">
-      {{ tempteratureMeasurement?.value ?? "-" }}
-      {{ tempteratureMeasurement?.unit }}
+      {{ tempteratureMeasurement()?.value ?? "-" }}
+      {{ tempteratureMeasurement()?.unit }}
     </p>
   </div>
 </div>

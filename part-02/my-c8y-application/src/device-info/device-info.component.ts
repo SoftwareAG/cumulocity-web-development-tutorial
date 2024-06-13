@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, WritableSignal } from '@angular/core';
 import { DeviceDetails, TemperatureMeasuerement } from './device-info.model';
 import { DeviceInfoService } from './device-info.service';
 
@@ -8,7 +8,7 @@ import { DeviceInfoService } from './device-info.service';
   providers: [DeviceInfoService],
 })
 export class DeviceInfoComponent implements OnInit {
-  tempteratureMeasurement: TemperatureMeasuerement | undefined;
+  tempteratureMeasurement!: WritableSignal<TemperatureMeasuerement | undefined>;
 
   deviceDetails!: DeviceDetails;
 
@@ -24,11 +24,7 @@ export class DeviceInfoComponent implements OnInit {
   }
 
   private subscribeForTemperatureMeasurements() {
-    this.deviceInfoService.temperatureMeasurement$.subscribe(
-      (temperatureMeasurement) =>
-        (this.tempteratureMeasurement = temperatureMeasurement)
-    );
-
-    this.deviceInfoService.subscribeForTemperatureMeasurements();
+    this.tempteratureMeasurement =
+      this.deviceInfoService.subscribeForTemperatureMeasurements();
   }
 }
