@@ -3,12 +3,14 @@ import { NavigatorNode, NavigatorNodeFactory } from '@c8y/ngx-components';
 
 @Injectable()
 export class DeviceInfoNavigationFactory implements NavigatorNodeFactory {
+  private readonly NAVIGATOR_NODE = {
+    label: 'Device Info',
+    icon: 'robot',
+    path: 'device-info',
+    priority: 100,
+  } as NavigatorNode;
+
   get() {
-    return new NavigatorNode({
-      label: 'Device Info',
-      icon: 'robot',
-      path: 'device-info',
-      priority: 100,
-    });
+    return this.NAVIGATOR_NODE;
   }
 }
