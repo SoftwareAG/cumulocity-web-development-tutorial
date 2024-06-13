@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, WritableSignal } from '@angular/core';
 import { DeviceDetails, TemperatureMeasuerement } from './device-info.model';
 import { DeviceInfoService } from './device-info.service';
 
@@ -8,11 +8,11 @@ import { DeviceInfoService } from './device-info.service';
   providers: [DeviceInfoService],
 })
 export class DeviceInfoComponent implements OnInit, OnDestroy {
-  private readonly DEVICE_ID = '{{deviceId}}';
+  private readonly DEVICE_ID = '2104';
 
-  tempteratureMeasurement: TemperatureMeasuerement;
+  tempteratureMeasurement!: WritableSignal<TemperatureMeasuerement | undefined>;
 
-  deviceDetails: DeviceDetails;
+  deviceDetails!: DeviceDetails | undefined;
 
   constructor(private deviceInfoService: DeviceInfoService) {}
 
@@ -26,15 +26,16 @@ export class DeviceInfoComponent implements OnInit, OnDestroy {
   }
 
   private async initDeviceDetails() {
-    this.deviceDetails = await this.deviceInfoService.getDeviceDetails(this.DEVICE_ID);
+    this.deviceDetails = await this.deviceInfoService.getDeviceDetails(
+      this.DEVICE_ID
+    );
   }
 
   private subscribeForTemperatureMeasurements() {
-    this.deviceInfoService.temperatureMeasurement$.subscribe(
-      (temperatureMeasurement) => (this.tempteratureMeasurement = temperatureMeasurement)
-    );
-
-    this.deviceInfoService.subscribeForTemperatureMeasurements(this.DEVICE_ID);
+    this.tempteratureMeasurement =
+      this.deviceInfoService.subscribeForTemperatureMeasurements(
+        this.DEVICE_ID
+      );
   }
 
   private unsubscribeForTemperatureMeasurements() {
