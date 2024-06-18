@@ -1,16 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, WritableSignal, signal } from '@angular/core';
 import { InventoryService } from '@c8y/client';
-import { Subject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { DeviceDetails, TemperatureMeasuerement } from './device-info.model';
-import { get } from 'lodash';
 import { MeasurementRealtimeService } from '@c8y/ngx-components';
 
 @Injectable()
 export class DeviceInfoService {
-  temperatureMeasurement$: Subject<TemperatureMeasuerement> =
-    new Subject<TemperatureMeasuerement>();
+  private temperatureMeasurement: WritableSignal<
+    TemperatureMeasuerement | undefined
+  > = signal(undefined);
 
-  private realtimeSubscription: Subscription;
+  private realtimeSubscription!: Subscription;
 
   private readonly TEMPERATURE_FRAGMENT = 'c8y_Temperature';
 
@@ -21,21 +21,35 @@ export class DeviceInfoService {
     private measurementRealtimeService: MeasurementRealtimeService
   ) {}
 
-  async getDeviceDetails(deviceId: string): Promise<DeviceDetails> {
+  async getDeviceDetails(deviceId: string): Promise<DeviceDetails | undefined> {
     try {
       const response = await this.inventoryService.detail(deviceId);
       const deviceManagedObject = response.data;
 
-      return { name: deviceManagedObject.name, type: deviceManagedObject.type };
+      return {
+        name: deviceManagedObject['name'],
+        type: deviceManagedObject['type'],
+      };
     } catch (error) {
-      console.error('Error occurred while loading the device description: ', error);
+      console.error(
+        'Error occurred while loading the device description: ',
+        error
+      );
 
       return undefined;
     }
   }
 
-  subscribeForTemperatureMeasurements(deviceId: string): void {
-    this.loadLatestMeasurement(deviceId, this.TEMPERATURE_FRAGMENT, this.TEMPERATURE_SERIES);
+  subscribeForTemperatureMeasurements(
+    deviceId: string
+  ): WritableSignal<TemperatureMeasuerement | undefined> {
+    this.loadLatestMeasurement(
+      deviceId,
+      this.TEMPERATURE_FRAGMENT,
+      this.TEMPERATURE_SERIES
+    );
+
+    return this.temperatureMeasurement;
   }
 
   unscubscribeFromTemperatureMeasurements(): void {
@@ -53,21 +67,22 @@ export class DeviceInfoService {
   ) {
     try {
       this.realtimeSubscription = this.measurementRealtimeService
-        .latestValueOfSpecificMeasurement$(measurementFragment, measurementSeries, deviceId)
+        .latestValueOfSpecificMeasurement$(
+          measurementFragment,
+          measurementSeries,
+          deviceId
+        )
         .subscribe((measurement) => {
-          const temperatureValue: number = get(
-            measurement,
-            `${measurementFragment}.${measurementSeries}.value`
-          );
-          const temperatureUnit: string = get(
-            measurement,
-            `${measurementFragment}.${measurementSeries}.unit`
-          );
-
-          this.temperatureMeasurement$.next({ value: temperatureValue, unit: temperatureUnit });
+          this.temperatureMeasurement.set({
+            value: measurement[measurementFragment][measurementSeries]['value'],
+            unit: measurement[measurementFragment][measurementSeries]['unit'],
+          });
         });
     } catch (error) {
-      console.error('Error occurred while loading the latest measurement: ', error);
+      console.error(
+        'Error occurred while loading the latest measurement: ',
+        error
+      );
     }
   }
 }

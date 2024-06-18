@@ -1,11 +1,9 @@
-import { Injectable, resolveForwardRef } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Injectable, WritableSignal, signal } from '@angular/core';
 import { DeviceDetails, TemperatureMeasuerement } from './device-info.model';
 
 @Injectable()
 export class DeviceInfoService {
-  temperatureMeasurement$: Subject<TemperatureMeasuerement> =
-    new Subject<TemperatureMeasuerement>();
+  private temperatureMeasurement!: WritableSignal<TemperatureMeasuerement>;
 
   constructor() {}
 
@@ -15,18 +13,24 @@ export class DeviceInfoService {
     );
   }
 
-  subscribeForTemperatureMeasurements(): void {
+  subscribeForTemperatureMeasurements(): WritableSignal<TemperatureMeasuerement> {
     // publish latest measurement
-    this.temperatureMeasurement$.next({ value: 10, unit: '°C' });
+    this.temperatureMeasurement = signal({ value: 10, unit: '°C' });
 
     // push random temperature every 10 seconds
     setInterval(
-      () => this.temperatureMeasurement$.next({ value: this.getRandomInt(8, 15), unit: '°C' }),
+      () =>
+        this.temperatureMeasurement.set({
+          value: this.getRandomInt(8, 15),
+          unit: '°C',
+        }),
       10000
     );
+
+    return this.temperatureMeasurement;
   }
 
-  private getRandomInt(min, max) {
+  private getRandomInt(min: number, max: number): number {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min);
