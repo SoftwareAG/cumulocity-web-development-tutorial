@@ -20,7 +20,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    ContextDashboardModule.config(),
+    ContextDashboardModule,
     CommonModule,
     RouterModule.forChild(routes),
     CoreModule,
